@@ -4,7 +4,15 @@
 
 {% block body %}
 
-{% for post in posts %}
-    oui
+{{ form_start(newpostform, {'method': 'get', 'action': path('new_post')}) }}
+{{ form_end(newpostform) }}
+
+
+{% for post in allposts %}
+    <div class="card">
+        <div class="card-title">{{ post.user }}</div>
+        <div class="card-body">{{ post.content }}</div>
+    </div>
 {% endfor %}
+
 {% endblock %}

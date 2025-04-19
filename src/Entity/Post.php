@@ -38,6 +38,9 @@ class Post
     #[ORM\OneToMany(targetEntity: Dislike::class, mappedBy: 'post', orphanRemoval: true)]
     private Collection $dislikes;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $relatedpost = null;
+
     public function __construct()
     {
         $this->likes = new ArrayCollection();
@@ -141,6 +144,18 @@ class Post
                 $dislike->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRelatedpost(): ?int
+    {
+        return $this->relatedpost;
+    }
+
+    public function setRelatedpost(?int $relatedpost): static
+    {
+        $this->relatedpost = $relatedpost;
 
         return $this;
     }

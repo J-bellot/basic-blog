@@ -15,12 +15,16 @@
         <script src="{{ asset('assets/js/script.js') }}"></script>
     </head>
     <body>
-        <nav class="navbar bg-body-primary">
+        <nav class="navbar bg-body-tertiary" style="background-color: #2b3035;">
             <div class="container-fluid">
-              <a class="navbar-brand" href="{{ path('index') }}">Navbar</a>
+              <a class="navbar-brand" href="{{ path('home') }}">Basic Blog</a>
               <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                {% if app.user is null %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-success">Login</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-success">{{ app.user }}</a>
+                {% endif %}
               </form>
             </div>
         </nav>
