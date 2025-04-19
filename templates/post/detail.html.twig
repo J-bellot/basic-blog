@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}détail du post{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-title">{{ post.user }}</div>
+        <div class="card-body">{{ post.content }}</div>
+    </div>
+    {{ form_start(commentform, {'method': 'post', 'action': path('new_post')}) }}
+    {{ form_end(commentform) }}
+
+    {% for comment in allcomments %}
+        <a href="{{ path('post_detail', parameters = {id: comment.id}) }}">
+            <div class="card">
+                <div class="card-title">{{ comment.user }}</div>
+                <div class="card-body">{{ comment.content }}</div>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}
