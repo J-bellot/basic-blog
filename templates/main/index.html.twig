@@ -9,12 +9,18 @@
 
 
 {% for post in allposts %}
-    <a href="{{ path('post_detail', parameters = {id: post.id}) }}">
-        <div class="card">
-            <div class="card-title">{{ post.user }}</div>
-            <div class="card-body">{{ post.content }}</div>
+        <div class="card my-5">
+            <a href="{{ path('post_detail', parameters = {id: post.id}) }}">
+                <div class="card-title">{{ post.user }}</div>
+                <div class="card-body">{{ post.content }}</div>
+            </a>
+            {% if (app.user) %}
+                <button class="like btn btn-primary" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="like">Like {{app.user.id}} </button>
+                <button class="dislike btn btn-secondary" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="dislike">Dislike</button>
+            {% else %}
+                TODO
+            {% endif %}
         </div>
-    </a>
 {% endfor %}
 
 {% endblock %}
