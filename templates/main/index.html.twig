@@ -17,8 +17,10 @@
             {% if (app.user) %}
                 <button class="like btn btn-primary" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="like">Like {{app.user.id}} </button>
                 <button class="dislike btn btn-secondary" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="dislike">Dislike</button>
+                {{ dump(post.likes|length) }}
             {% else %}
-                TODO
+                <a class="btn btn-primary" href="{{ path('app_login') }}">Like</a>
+                <a class="btn btn-secondary" href="{{ path('app_login') }}">Dislike</a>
             {% endif %}
         </div>
 {% endfor %}

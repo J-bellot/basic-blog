@@ -19,28 +19,15 @@ final class LikeDislikeController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if($data['action'] == 'like'){
-            $like = new Like();
+        $like_dislike = ($data['action'] == 'like' ? new Like() :  new Dislike());
 
-            $like
-                ->setPost($entity_manager->getRepository(Post::class)->findOneBy(['id' => $data['postId']]))
-                ->setUser($entity_manager->getRepository(User::class)->findOneBy(['id' => $data['userId']]));
+        $like_dislike
+            ->setPost($entity_manager->getRepository(Post::class)->findOneBy(['id' => $data['postId']]))
+            ->setUser($entity_manager->getRepository(User::class)->findOneBy(['id' => $data['userId']]));
 
-            $entity_manager->persist($like);
+        $entity_manager->persist($like_dislike);
 
-            $entity_manager->flush();
-        }
-        else{
-            $dislike = new Dislike();
-
-            $dislike
-                ->setPost($entity_manager->getRepository(Post::class)->findOneBy(['id' => $data['postId']]))
-                ->setUser($entity_manager->getRepository(User::class)->findOneBy(['id' => $data['userId']]));
-
-            $entity_manager->persist($dislike);
-
-            $entity_manager->flush();
-        }
+        $entity_manager->flush();
 
         return new JsonResponse(['message' => 'Action enregistrée !']);
     }

@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Like;
 use App\Entity\Post;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Repository\LikeRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Integer;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -16,28 +19,23 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    //    /**
-    //     * @return Post[] Returns an array of Post objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getLikesbyId(Int $post_id, Int $user_id, LikeRepository $like_repository): array
+    {
+        $likes = $like_repository->findBy([
+            'post' => $post_id,
+            'user' => $user_id
+            ]);
 
-    //    public function findOneBySomeField($value): ?Post
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $likes;
+    }
+
+    public function getDislikesbyId(Int $post_id, Int $user_id, DislikeRepository $dislike_repository): array
+    {
+        $dislikes = $dislike_repository->findBy([
+            'post' => $post_id,
+            'user' => $user_id
+            ]);
+
+        return $dislikes;
+    }
 }
