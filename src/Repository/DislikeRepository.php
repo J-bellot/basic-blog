@@ -16,28 +16,13 @@ class DislikeRepository extends ServiceEntityRepository
         parent::__construct($registry, Dislike::class);
     }
 
-    //    /**
-    //     * @return Dislike[] Returns an array of Dislike objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Dislike
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function checkDislikeExists(Int $post_id, Int $user_id): ?Dislike
+    {        
+        $entity = $this->findOneBy([
+            'post' => $post_id,
+            'user' => $user_id,
+        ]);
+        
+        return $entity;
+    }
 }
