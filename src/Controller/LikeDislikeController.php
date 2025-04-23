@@ -35,7 +35,8 @@ final class LikeDislikeController extends AbstractController
         $entity_manager->flush();
 
         // TODO refresh le nombre de like et de dislike ce serait cool
-
+        // TODO cancel like if liked et cancel like if dislike et inversement
+        
         return new JsonResponse(['message' => 'Action enregistrée !']);
     }
 
