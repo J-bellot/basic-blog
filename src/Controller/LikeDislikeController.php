@@ -7,6 +7,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Entity\Dislike;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +20,10 @@ final class LikeDislikeController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        if ($this->checkLikeDislikeExist($entity_manager, $data['action'], $data['postId'], $data['userId'])){
+            return new JsonResponse(['message' => 'déjà liké ou disliké']);
+        }
+
         $like_dislike = ($data['action'] == 'like' ? new Like() :  new Dislike());
 
         $like_dislike
@@ -29,6 +34,32 @@ final class LikeDislikeController extends AbstractController
 
         $entity_manager->flush();
 
+        // TODO refresh le nombre de like et de dislike ce serait cool
+
         return new JsonResponse(['message' => 'Action enregistrée !']);
+    }
+
+    public function checkLikeDislikeExist(EntityManagerInterface $entity_manager, String $type, Int $post_id, Int $user_id): bool
+    {
+        if ($type == 'like'){
+            $repository = $entity_manager->getRepository(Like::class);
+        }
+
+        if ($type == 'dislike'){
+            $repository = $entity_manager->getRepository(Dislike::class);
+        }
+
+        if (isset($repository)){
+            $entity = $repository->findOneBy([
+                'post' => $post_id,
+                'user' => $user_id,
+            ]);
+            
+            if ($entity != null){
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

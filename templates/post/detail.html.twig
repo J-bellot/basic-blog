@@ -3,19 +3,13 @@
 {% block title %}détail du post{% endblock %}
 
 {% block body %}
-    <div class="card">
-        <div class="card-title">{{ post.user }}</div>
-        <div class="card-body">{{ post.content }}</div>
-    </div>
+    {{ include('_partial/_post.html.twig', {'post': post}) }}
+
+    {# TODO faire en sorte que ce form là redirect vers la page du post commenté parce qu'on ne comment pas forcément sur HOME #}
     {{ form_start(commentform, {'method': 'post', 'action': path('new_post')}) }}
     {{ form_end(commentform) }}
 
     {% for comment in allcomments %}
-        <a href="{{ path('post_detail', parameters = {id: comment.id}) }}">
-            <div class="card">
-                <div class="card-title">{{ comment.user }}</div>
-                <div class="card-body">{{ comment.content }}</div>
-            </div>
-        </a>
+        {{ include('_partial/_post.html.twig', {'post': comment}) }}
     {% endfor %}
 {% endblock %}
