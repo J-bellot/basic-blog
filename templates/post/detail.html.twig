@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}détail du post{% endblock %}
+{% block title %}Détail du post{% endblock %}
 
 {% block body %}
     {{ include('_partial/_post.html.twig', {'post': post}) }}
 
-    {# TODO faire en sorte que ce form là redirect vers la page du post commenté parce qu'on ne comment pas forcément sur HOME #}
     {{ form_start(commentform, {'method': 'post', 'action': path('new_post')}) }}
     {{ form_end(commentform) }}
 

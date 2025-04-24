@@ -42,6 +42,10 @@ final class PostController extends AbstractController
             $entity_manager_interface->flush();
         }
 
+        if ($form['relatedpost']->getData() != null){
+            return $this->redirectToRoute('post_detail', ['id' => $form['relatedpost']->getData()]);
+        }
+
         return $this->redirectToRoute('home');
     }
 
@@ -51,7 +55,7 @@ final class PostController extends AbstractController
         $repository = $entity_manager->getRepository(Post::class);
 
         $post = $repository->findOneBy(['id' => $id]);
-        $allcomments = $repository->findBy(['relatedpost' => $id]);
+        $allcomments = $repository->findBy(['relatedpost' => $id], ['created_at' => 'DESC']);
         $comment = new Post();
         $comment->setRelatedpost($id);
 
