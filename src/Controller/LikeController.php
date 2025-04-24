@@ -19,14 +19,30 @@ final class LikeController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $like = $entity_manager->getRepository(Like::class)->checkLikeExists($data['postId'], $data['userId']);
-        
+        $like_repository = $entity_manager->getRepository(Like::class);
+
+        $like = $like_repository->checkLikeExists($data['postId'], $data['userId']);
+
         if ($like != null) {
             $entity_manager->remove($like);
 
             $entity_manager->flush();
 
-            return new JsonResponse(['message' => 'supprimé le like']);
+            //TODO faire un count plus efficace quand même ce serait sympa
+
+            $post_likes = count($like_repository->findBy([
+                'post' => $data['postId']
+            ]));
+    
+            $post_dislikes = count($entity_manager->getRepository(Dislike::class)->findBy([
+                'post' => $data['postId']
+            ]));    
+
+            return new JsonResponse([
+                'message' => 'supprimé le like',
+                'like' => $post_likes,
+                'dislike' => $post_dislikes, 
+                ]);
         }
 
         $dislike = $entity_manager->getRepository(Dislike::class)->checkDislikeExists($data['postId'], $data['userId']);
@@ -45,6 +61,18 @@ final class LikeController extends AbstractController
 
         $entity_manager->flush();
 
-        return new JsonResponse(['message' => 'liké peut être supprimé le dislike on sait pas']);
+        $post_likes = count($like_repository->findBy([
+            'post' => $data['postId']
+        ]));
+
+        $post_dislikes = count($entity_manager->getRepository(Dislike::class)->findBy([
+            'post' => $data['postId']
+        ]));
+
+        return new JsonResponse([
+            'message' => 'liké peut être supprimé le dislike on sait pas',
+            'like' => $post_likes,
+            'dislike' => $post_dislikes, 
+        ]);
     }
 }
