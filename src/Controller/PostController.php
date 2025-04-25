@@ -50,12 +50,10 @@ final class PostController extends AbstractController
     }
 
     #[Route('/post/{id}', name: 'post_detail')]
-    public function postDetail(string $id, EntityManagerInterface $entity_manager): Response
+    public function postDetail(string $id, PostRepository $repository): Response
     {
-        $repository = $entity_manager->getRepository(Post::class);
-
         $post = $repository->findOneBy(['id' => $id]);
-        $allcomments = $repository->findBy(['relatedpost' => $id], ['created_at' => 'DESC']);
+        $allcomments = $repository->getPostPaginated(1, $id);
         $comment = new Post();
         $comment->setRelatedpost($id);
 

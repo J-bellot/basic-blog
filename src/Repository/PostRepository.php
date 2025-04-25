@@ -2,12 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\Like;
 use App\Entity\Post;
 use App\Repository\LikeRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use phpDocumentor\Reflection\Types\Integer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Query\Limit;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -37,5 +37,36 @@ class PostRepository extends ServiceEntityRepository
             ]);
 
         return $dislikes;
+    }
+
+    public function getPostPaginated(Int $page, ?int $related_post, int $limit = 10): array
+    {
+        $limit = abs($limit);
+
+        $result = [];
+
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('p')
+            ->from('App\Entity\Post', 'p')
+            ->where($related_post != null ? "p.relatedpost = '$related_post'" : 'p.relatedpost is null')
+            ->orderBy('p.created_at', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult(($page * $limit) - $limit);
+
+        $paginator = new Paginator($query);
+
+        $data = $paginator->getQuery()->getResult();
+
+        if(empty($data)){
+            return $result;
+        }
+
+        $pages = ceil($paginator->count() / $limit);
+
+        $result['posts'] = $data;
+        $result['pages'] = $pages;
+        $result['page'] = $page;
+
+        return $result;
     }
 }

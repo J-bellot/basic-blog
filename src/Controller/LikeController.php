@@ -39,7 +39,6 @@ final class LikeController extends AbstractController
             ]));    
 
             return new JsonResponse([
-                'message' => 'supprimé le like',
                 'like' => $post_likes,
                 'dislike' => $post_dislikes, 
                 ]);
@@ -70,7 +69,6 @@ final class LikeController extends AbstractController
         ]));
 
         return new JsonResponse([
-            'message' => 'liké peut être supprimé le dislike on sait pas',
             'like' => $post_likes,
             'dislike' => $post_dislikes, 
         ]);
