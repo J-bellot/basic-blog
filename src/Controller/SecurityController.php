@@ -2,23 +2,24 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\NewUserType;
-use App\Repository\UserRepository;
+use App\Security\UserAuthenticator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
-
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', [
@@ -34,11 +35,38 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'app_register')]
-    public function register(Request $request, UserRepository $user_repository): Response
+    public function register(Request $request, EntityManagerInterface $entity_manager, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $user_authenticator, UserAuthenticator $authenticator): Response
     {
-        $registerform = $this->createForm(NewUserType::class);
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user = new User();
+
+        $registerform = $this->createForm(NewUserType::class, $user);
+
+        $registerform->handleRequest($request);
+
+        if ($registerform->isSubmitted() && $registerform->isValid()) {
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $registerform->get('password')->getData()
+                )
+            );
+
+            $user->setRoles(['ROLE_USER']);
+
+            $entity_manager->persist($user);
+            $entity_manager->flush();
 
 
+            return $user_authenticator->authenticateUser(
+                $user,
+                $authenticator,
+                $request
+            );
+        }
 
         return $this->render('/security/register.html.twig',[
             'registerform' => $registerform
