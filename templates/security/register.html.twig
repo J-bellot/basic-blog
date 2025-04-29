@@ -5,4 +5,6 @@
 {% block body %}
     {{ form_start(registerform) }}
     {{ form_end(registerform) }}
+    <p>Vous avez déjà un compte ? <a href="{{ path('app_login') }}">Connectez-vous</a></p>
+
 {% endblock %}

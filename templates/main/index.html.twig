@@ -4,9 +4,10 @@
 
 {% block body %}
 
-{{ form_start(newpostform, {'method': 'post', 'action': path('new_post')}) }}
-{{ form_end(newpostform) }}
-
+<div class="my-3">
+    {{ form_start(newpostform, {'method': 'post', 'action': path('new_post')}) }}
+    {{ form_end(newpostform) }}
+</div>
 
 {% for post in allposts %}
     {{ include('_partial/_post.html.twig', {'post': post}) }}

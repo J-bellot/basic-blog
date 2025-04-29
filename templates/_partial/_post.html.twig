@@ -1,13 +1,15 @@
-<div class="card my-5" id="post-{{post.id}}">
+<post class="card my-5" id="post-{{post.id}}">
     <a href="{{ path('post_detail', parameters = {id: post.id}) }}">
-        <div class="card-title">{{ post.user }}</div>
+        <div class="card-body pb-0 fw-bolder">{{ post.user }}</div>
         <div class="card-body">{{ post.content }}</div>
     </a>
-    {% if (app.user) %}
-        <button class="like btn btn-primary" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="like"><span id="likebtn-{{post.id}}" >{{ post.likes|length }}</span> Like</button>
-        <button class="dislike btn btn-secondary" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="dislike"><span id="dislikebtn-{{post.id}}" >{{ post.dislikes|length }}</span> Dislike</button>
-    {% else %}
-        <a class="btn btn-primary" href="{{ path('app_login') }}">{{ post.likes|length }} Like</a>
-        <a class="btn btn-secondary" href="{{ path('app_login') }}">{{ post.dislikes|length }} Dislike</a>
-    {% endif %}
-</div>
+    <div class="like-dislike-container d-flex">
+        {% if (app.user) %}
+            <button class="like btn btn-primary w-50" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="like"><span id="likebtn-{{post.id}}" >{{ post.likes|length }}</span> Like</button>
+            <button class="dislike btn btn-secondary w-50" data-userId="{{ app.user.id }}" data-postId="{{ post.id }}" data-action="dislike"><span id="dislikebtn-{{post.id}}" >{{ post.dislikes|length }}</span> Dislike</button>
+        {% else %}
+            <a class="btn btn-primary w-50 rounded-bottom-left" href="{{ path('app_login') }}">{{ post.likes|length }} Like</a>
+            <a class="btn btn-secondary w-50" href="{{ path('app_login') }}">{{ post.dislikes|length }} Dislike</a>
+        {% endif %}
+    </div>
+</post>

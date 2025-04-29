@@ -62,7 +62,7 @@ final class PostController extends AbstractController
         return $this->render('post/detail.html.twig',[
             'commentform' => $commentform,
             'post' => $post,
-            'allcomments' => $allcomments['posts'],
+            'allcomments' => isset($allcomments['posts']) ? $allcomments['posts'] : [],
         ]);
     }
 }
