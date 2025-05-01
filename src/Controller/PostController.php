@@ -6,7 +6,6 @@ use App\Entity\Post;
 use DateTimeImmutable;
 use App\Form\NewPostType;
 use App\Repository\PostRepository;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,10 +49,12 @@ final class PostController extends AbstractController
     }
 
     #[Route('/post/{id}', name: 'post_detail')]
-    public function postDetail(string $id, PostRepository $repository): Response
+    public function postDetail(string $id, PostRepository $repository, Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
+
         $post = $repository->findOneBy(['id' => $id]);
-        $allcomments = $repository->getPostPaginated(1, $id);
+        $allcomments = $repository->getPostPaginated($page, $id);
         $comment = new Post();
         $comment->setRelatedpost($id);
 
@@ -63,6 +64,8 @@ final class PostController extends AbstractController
             'commentform' => $commentform,
             'post' => $post,
             'allcomments' => isset($allcomments['posts']) ? $allcomments['posts'] : [],
+            'currentpage' => $page,
+            'pages' => isset($allcomments['pages']) ? $allcomments['pages'] : 0
         ]);
     }
 }

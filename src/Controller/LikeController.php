@@ -28,8 +28,6 @@ final class LikeController extends AbstractController
 
             $entity_manager->flush();
 
-            //TODO faire un count plus efficace quand même ce serait sympa
-
             $post_likes = count($like_repository->findBy([
                 'post' => $data['postId']
             ]));
